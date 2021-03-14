@@ -38,8 +38,15 @@ public:
 
 	GLuint m_vao;
 
+
+	float xRotation = 0;
+	float yRotation = 0;
+	float zRotation = 0;
+
+
 	void makeBuffers();
 	void draw();
+	void drawMesh();
 	void setShaderPrograms(GLuint filling, GLuint skeleton);
 	void calculateMVP();
 	void generateGrid();

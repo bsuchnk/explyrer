@@ -2,7 +2,6 @@
 
 #include "wx/wx.h"
 #include "CanvasFrame.h"
-#include "MyGLContext.h"
 
 class App : public wxApp
 {

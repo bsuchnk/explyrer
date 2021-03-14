@@ -13,6 +13,13 @@ public:
 	wxGLContext* m_context;
 	Model model;
 
+	bool isShowingGrid;
+	bool isShowingMesh;
+/*
+	float xRotation;
+	float yRotation;
+	float zRotation;*/
+
 public:
     MyGLCanvas(wxWindow* parent, int* attribList = NULL);
 	~MyGLCanvas();

@@ -3,6 +3,62 @@
 #include <iostream>
 #include "dep/glm/gtc/matrix_transform.hpp"
 #include <algorithm>
+#include <wx/datetime.h>
+
+
+void Model::draw()
+{
+	//temporary:
+	calculateMVP();
+
+	glBindVertexArray(m_vao);
+
+	glUseProgram(m_filling_sp);
+	glUniformMatrix4fv(m_mvp_uniform, 1, GL_FALSE, &m_mvp[0][0]);
+	glUniform3f(m_zpos_uniform, m_zpos.x, m_zpos.y, m_zpos.z);
+	glUniform3f(m_size_uniform, m_size.x, m_size.y, m_size.z);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
+}
+
+void Model::drawMesh()
+{
+	glUseProgram(m_skeleton_sp);
+	glUniformMatrix4fv(m_mvp_uniform_skeleton, 1, GL_FALSE, &m_mvp[0][0]);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(1 + m_size_max / 2500);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
+}
+
+void Model::calculateMVP()
+{
+	const float k = 0.8;
+	glm::mat4 Projection = glm::ortho(
+		-m_size_max * k,
+		m_size_max * k,
+		-m_size_max * k,
+		m_size_max * k,
+		0.001f,
+		200000.0f
+	);
+
+
+	GLfloat max_size = std::max(m_size.x, std::max(m_size.y, m_size.z));
+	glm::mat4 View = glm::lookAt(
+		glm::vec3(max_size * 1.1, max_size * 1.1, max_size * 1.1),
+		glm::vec3(m_middle.x, m_middle.y, m_middle.z),
+		glm::vec3(0, 0, 1)
+	);
+
+
+	glm::mat4 Model = glm::mat4(1.0f);
+	Model = glm::rotate(Model, xRotation, glm::vec3(1, 0, 0));
+	Model = glm::rotate(Model, yRotation, glm::vec3(0, 1, 0));
+	Model = glm::rotate(Model, zRotation, glm::vec3(0, 0, 1));
+
+
+	m_mvp = Projection * View * Model;
+}
 
 int Model::loadPLY(std::string src)
 {
@@ -127,24 +183,6 @@ void Model::makeBuffers()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
 }
 
-void Model::draw()
-{
-	glBindVertexArray(m_vao);
-
-	glUseProgram(m_filling_sp);
-	glUniformMatrix4fv(m_mvp_uniform, 1, GL_FALSE, &m_mvp[0][0]);
-	glUniform3f(m_zpos_uniform, m_zpos.x, m_zpos.y, m_zpos.z);
-	glUniform3f(m_size_uniform, m_size.x, m_size.y, m_size.z);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
-
-	glUseProgram(m_skeleton_sp);
-	glUniformMatrix4fv(m_mvp_uniform_skeleton, 1, GL_FALSE, &m_mvp[0][0]);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glLineWidth(1 + m_size_max / 2500);
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
-}
-
 void Model::setShaderPrograms(GLuint filling, GLuint skeleton)
 {
 	m_filling_sp = filling;
@@ -153,31 +191,6 @@ void Model::setShaderPrograms(GLuint filling, GLuint skeleton)
 	m_size_uniform = glGetUniformLocation(m_filling_sp, "size");
 	m_zpos_uniform = glGetUniformLocation(m_filling_sp, "zpos");
 	m_mvp_uniform_skeleton = glGetUniformLocation(m_skeleton_sp, "MVP");
-}
-
-void Model::calculateMVP()
-{
-	const float k = 0.8;
-	glm::mat4 Projection = glm::ortho(
-		-m_size_max * k,
-		m_size_max * k,
-		-m_size_max * k,
-		m_size_max * k,
-		0.001f,
-		200000.0f
-	);
-
-
-	GLfloat max_size = std::max(m_size.x, std::max(m_size.y, m_size.z));
-	glm::mat4 View = glm::lookAt(
-		glm::vec3(max_size * 1.1, max_size * 1.1, max_size * 1.1),
-		glm::vec3(m_middle.x, m_middle.y, m_middle.z),
-		glm::vec3(0, 0, 1)
-	);
-
-	glm::mat4 Model = glm::mat4(1.0f);
-
-	m_mvp = Projection * View * Model;
 }
 
 void Model::generateGrid()

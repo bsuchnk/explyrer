@@ -24,9 +24,6 @@
     <ClCompile Include="CanvasFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MyGLContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MyGLCanvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,9 +39,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CanvasFrame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MyGLContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MyGLCanvas.h">
@@ -74,6 +68,9 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\vs_raw.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\vs_gradient.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

@@ -1,5 +1,4 @@
 #include "MyGLCanvas.h"
-#include "MyGLContext.h"
 #include <wx/app.h>
 #include "App.h"
 #include "global.h"
@@ -26,6 +25,10 @@ MyGLCanvas::MyGLCanvas(wxWindow* parent, int* attribList)
 	prepare3dViewport();
 
 	loadModel("ply/ball.ply");
+
+	//
+	isShowingGrid = true;
+	isShowingMesh = true;
 }
 
 MyGLCanvas::~MyGLCanvas()
@@ -63,9 +66,14 @@ void MyGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	model.drawGrid();
-	model.drawAxis();
+	if (isShowingGrid) {
+		model.drawGrid();
+		model.drawAxis();
+	}
 	model.draw();
+	if (isShowingMesh) {
+		model.drawMesh();
+	}
 
 	glFlush();
 
