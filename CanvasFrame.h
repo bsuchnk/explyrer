@@ -4,6 +4,7 @@
 #include <map>
 #include <fstream>
 #include "MyGLCanvas.h"
+#include <wx/bmpcbox.h>
 
 class CanvasFrame : public wxFrame
 {
@@ -20,6 +21,7 @@ public:
 	wxSlider* xRotateSlider;
 	wxSlider* yRotateSlider;
 	wxSlider* zRotateSlider;
+	wxBitmapComboBox* shaderComboBox;
 
 	void RefreshControls();
 

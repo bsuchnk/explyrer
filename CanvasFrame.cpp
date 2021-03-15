@@ -29,10 +29,21 @@ CanvasFrame::CanvasFrame() : wxFrame(nullptr, wxID_ANY, "exPLYrer", wxDefaultPos
 	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer* glhoriz = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer* btnhoriz = new wxBoxSizer(wxHORIZONTAL);
+	
 	showGrid = new wxCheckBox(panel, ID_SHOW_GRID, "Grid");
 	showGrid->SetValue(true);
 	showMesh = new wxCheckBox(panel, ID_SHOW_MESH, "Mesh");
 	showMesh->SetValue(true);
+	
+	wxArrayString shaderChoices;
+	wxArrayPtrVoid shaderBmps;
+	shaderChoices.Add("Rainbow");
+	shaderChoices.Add("Gradient");
+	shaderBmps.Add(NULL);
+	shaderBmps.Add(NULL);
+	shaderComboBox = new wxBitmapComboBox(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY);
+	for (int i = 0; i < shaderChoices.GetCount(); i++)
+		shaderComboBox->Append(shaderChoices[i]);
 
 	xRotateSlider = new wxSlider(panel, ID_ROTATE_SLIDER, 180, 0, 359);
 	yRotateSlider = new wxSlider(panel, ID_ROTATE_SLIDER+1, 180, 0, 359);
@@ -47,6 +58,7 @@ CanvasFrame::CanvasFrame() : wxFrame(nullptr, wxID_ANY, "exPLYrer", wxDefaultPos
 	sizer->Add(btnhoriz);
 	btnhoriz->Add(showGrid, 0, wxCENTER);
 	btnhoriz->Add(showMesh, 0, wxCENTER);
+	btnhoriz->Add(shaderComboBox, 0, wxCENTER);
 	sizer->Add(xRotateSlider, 0, wxEXPAND);
 	sizer->Add(yRotateSlider, 0, wxEXPAND);
 	sizer->Add(zRotateSlider, 0, wxEXPAND);

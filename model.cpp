@@ -38,7 +38,7 @@ void Model::calculateMVP()
 		m_size_max * k,
 		-m_size_max * k,
 		m_size_max * k,
-		0.001f,
+		0.00001f,
 		200000.0f
 	);
 
@@ -46,7 +46,7 @@ void Model::calculateMVP()
 	GLfloat max_size = std::max(m_size.x, std::max(m_size.y, m_size.z));
 	glm::mat4 View = glm::lookAt(
 		glm::vec3(max_size * 1.1, max_size * 1.1, max_size * 1.1),
-		glm::vec3(m_middle.x, m_middle.y, m_middle.z),
+		glm::vec3(0, 0, 0),
 		glm::vec3(0, 0, 1)
 	);
 
@@ -91,8 +91,6 @@ int Model::loadPLY(std::string src)
 	}
 
 	m_vertices_count = vertex_n * 3;
-
-	//std::cout << m_vertices_count << " " << m_indices_count << "\n";
 	m_vertices = new GLfloat[m_vertices_count];
 
 	if (vertex_n > 0) {
@@ -116,8 +114,7 @@ int Model::loadPLY(std::string src)
 		m_max.y = std::max(m_max.y, m_vertices[i + 1]);
 		m_max.z = std::max(m_max.z, m_vertices[i + 2]);
 	}
-	printf("maxx: %f\nmaxy: %f\nmaxz: %f\n", m_max.x, m_max.y, m_max.z);
-	printf("minx: %f\nminy: %f\nminz: %f\n", m_zpos.x, m_zpos.y, m_zpos.z);
+
 	m_middle = {
 		(m_max.x + m_zpos.x) * 0.5f,
 		(m_max.y + m_zpos.y) * 0.5f,
@@ -128,6 +125,14 @@ int Model::loadPLY(std::string src)
 		m_max.y - m_zpos.y,
 		m_max.z - m_zpos.z
 	};
+
+	for (unsigned int i = 0; i < m_vertices_count; i += 3) {
+		m_vertices[i + 0] -= m_middle.x;
+		m_vertices[i + 1] -= m_middle.y;
+		m_vertices[i + 2] -= m_middle.z;
+	}
+	m_zpos -= m_middle;
+	m_max -= m_middle;
 
 	m_size_max = std::max(m_size.x, std::max(m_size.y, m_size.z));
 
