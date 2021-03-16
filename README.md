@@ -1,5 +1,7 @@
 # exPLYrer
 
-A program for convenient displaying 3d objects stored in .ply files.
+A program for convenient display of 3d objects stored in .ply files.
 
-![explyrer](https://user-images.githubusercontent.com/75221970/111033294-c8e92d80-8410-11eb-8379-376a9a6d5eb1.png)
+![explyrer-demo](https://user-images.githubusercontent.com/75221970/111364650-cc3f1c00-8691-11eb-87d3-867316ce3c58.gif)
+
+Example 3d models from https://people.sc.fsu.edu/~jburkardt/data/ply/ply.html
