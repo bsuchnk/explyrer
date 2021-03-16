@@ -2,16 +2,18 @@
 #include "MyGLCanvas.h"
 #include <wx/event.h>
 #include "App.h"
-
+#include "shaders.h"
 
 
 #define ID_SHOW_GRID 10001
 #define ID_ROTATE_SLIDER 10002
 #define ID_SHOW_MESH 10005
+#define ID_CHOOSE_SHADER 10006
 
 wxBEGIN_EVENT_TABLE(CanvasFrame, wxFrame)
 EVT_CHECKBOX(ID_SHOW_GRID, onShowGrid)
 EVT_CHECKBOX(ID_SHOW_MESH, onShowMesh)
+EVT_COMBOBOX(ID_CHOOSE_SHADER, onChooseShader)
 wxEND_EVENT_TABLE()
 
 CanvasFrame::CanvasFrame() : wxFrame(nullptr, wxID_ANY, "exPLYrer", wxDefaultPosition, wxSize(720, 720))
@@ -39,11 +41,16 @@ CanvasFrame::CanvasFrame() : wxFrame(nullptr, wxID_ANY, "exPLYrer", wxDefaultPos
 	wxArrayPtrVoid shaderBmps;
 	shaderChoices.Add("Rainbow");
 	shaderChoices.Add("Gradient");
+	shaderChoices.Add("White");
+	shaderChoices.Add("Black");
 	shaderBmps.Add(NULL);
 	shaderBmps.Add(NULL);
-	shaderComboBox = new wxBitmapComboBox(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY);
+	shaderBmps.Add(NULL);
+	shaderBmps.Add(NULL);
+	shaderComboBox = new wxBitmapComboBox(panel, ID_CHOOSE_SHADER, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY);
 	for (int i = 0; i < shaderChoices.GetCount(); i++)
 		shaderComboBox->Append(shaderChoices[i]);
+	shaderComboBox->SetSelection(0);
 
 	xRotateSlider = new wxSlider(panel, ID_ROTATE_SLIDER, 180, 0, 359);
 	yRotateSlider = new wxSlider(panel, ID_ROTATE_SLIDER+1, 180, 0, 359);
@@ -55,9 +62,10 @@ CanvasFrame::CanvasFrame() : wxFrame(nullptr, wxID_ANY, "exPLYrer", wxDefaultPos
 	int args[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 24, 0 };
 	myglcanvas = new MyGLCanvas(panel, args);
 
-	sizer->Add(btnhoriz);
+	sizer->Add(btnhoriz, 0, wxEXPAND);
 	btnhoriz->Add(showGrid, 0, wxCENTER);
 	btnhoriz->Add(showMesh, 0, wxCENTER);
+	btnhoriz->AddStretchSpacer();
 	btnhoriz->Add(shaderComboBox, 0, wxCENTER);
 	sizer->Add(xRotateSlider, 0, wxEXPAND);
 	sizer->Add(yRotateSlider, 0, wxEXPAND);
@@ -135,4 +143,14 @@ void CanvasFrame::onRotateSlider(wxCommandEvent & evt)
 	}
 
 	myglcanvas->Refresh();
+}
+
+void CanvasFrame::onChooseShader(wxCommandEvent & evt)
+{
+	int sel = shaderComboBox->GetSelection();
+	//wxMessageBox(std::to_string(sel));
+	if (sel != wxNOT_FOUND) {
+		myglcanvas->setFillShader(sel);
+		myglcanvas->Refresh();
+	}
 }

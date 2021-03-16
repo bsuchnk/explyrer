@@ -36,10 +36,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fs_black.glsl" />
-    <None Include="shaders\fs_rainbow.glsl" />
+    <None Include="shaders\fs_colored.glsl" />
+    <None Include="shaders\vs_black.glsl" />
     <None Include="shaders\vs_gradient.glsl" />
     <None Include="shaders\vs_rainbow.glsl" />
     <None Include="shaders\vs_raw.glsl" />
+    <None Include="shaders\vs_white.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

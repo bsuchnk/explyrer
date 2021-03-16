@@ -24,16 +24,31 @@ MyGLCanvas::MyGLCanvas(wxWindow* parent, int* attribList)
 
 	prepare3dViewport();
 
-	loadModel("ply/ball.ply");
-
 	//
 	isShowingGrid = true;
 	isShowingMesh = true;
+
+	initiateShaders();
+
+	loadModel("ply/ball.ply");
 }
 
 MyGLCanvas::~MyGLCanvas()
 {
 	delete m_context;
+	//delete shaders
+}
+
+void MyGLCanvas::setFillShader(int id)
+{
+	fillShader = id;
+	model.setShaderPrograms(shadersF[fillShader], shadersM[meshShader]);
+}
+
+void MyGLCanvas::setMeshShader(int id)
+{
+	meshShader = id;
+	model.setShaderPrograms(fillShader, meshShader);
 }
 
 void MyGLCanvas::prepare3dViewport()
@@ -55,6 +70,16 @@ void MyGLCanvas::prepare3dViewport()
 	glClearDepth(1.0f);	// Depth Buffer Setup
 	glEnable(GL_DEPTH_TEST); // Enables Depth Testing
 	glDepthFunc(GL_LEQUAL); // The Type Of Depth Testing To Do
+}
+
+void MyGLCanvas::initiateShaders()
+{
+	shadersF.push_back(CreateShader("shaders/vs_rainbow.glsl", "shaders/fs_colored.glsl"));
+	shadersF.push_back(CreateShader("shaders/vs_gradient.glsl", "shaders/fs_colored.glsl"));
+	shadersF.push_back(CreateShader("shaders/vs_white.glsl", "shaders/fs_colored.glsl"));
+	shadersF.push_back(CreateShader("shaders/vs_black.glsl", "shaders/fs_colored.glsl"));
+
+	shadersM.push_back(CreateShader("shaders/vs_black.glsl", "shaders/fs_colored.glsl"));
 }
 
 void MyGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
@@ -102,10 +127,7 @@ void MyGLCanvas::loadModel(wxString path)
 	model.generateGrid();
 	model.generateAxis();
 
-	GLuint s1, s2;
-	s1 = CreateShader("shaders/vs_rainbow.glsl", "shaders/fs_rainbow.glsl");
-	s2 = CreateShader("shaders/vs_raw.glsl", "shaders/fs_black.glsl");
-	model.setShaderPrograms(s1, s2);
+	model.setShaderPrograms(shadersF[fillShader], shadersM[meshShader]);
 }
 
 void MyGLCanvas::destroyModel()

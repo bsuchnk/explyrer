@@ -61,9 +61,6 @@
     <None Include="shaders\fs_black.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="shaders\fs_rainbow.glsl">
-      <Filter>shaders</Filter>
-    </None>
     <None Include="shaders\vs_rainbow.glsl">
       <Filter>shaders</Filter>
     </None>
@@ -71,6 +68,15 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\vs_gradient.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\vs_black.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\vs_white.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\fs_colored.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

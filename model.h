@@ -10,6 +10,8 @@
 class Model
 {
 public:
+	~Model();
+
 	int loadPLY(std::string src);
 	GLuint m_vertices_count;
 	GLfloat* m_vertices;

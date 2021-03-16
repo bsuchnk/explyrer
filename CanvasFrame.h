@@ -29,6 +29,7 @@ public:
 	void onShowGrid(wxCommandEvent& evt);
 	void onShowMesh(wxCommandEvent& evt);
 	void onRotateSlider(wxCommandEvent& evt);
+	void onChooseShader(wxCommandEvent& evt);
 
 	wxDECLARE_EVENT_TABLE();
 };

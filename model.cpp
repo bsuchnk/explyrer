@@ -60,6 +60,12 @@ void Model::calculateMVP()
 	m_mvp = Projection * View * Model;
 }
 
+Model::~Model()
+{
+	glDeleteProgram(m_filling_sp);
+	glDeleteProgram(m_skeleton_sp);
+}
+
 int Model::loadPLY(std::string src)
 {
 	std::ifstream f;
@@ -291,9 +297,15 @@ void Model::generateAxis()
 		m_max.x, m_max.y, m_zpos.z,
 		m_zpos.x, m_max.y, m_zpos.z,
 	};
+	GLfloat vertices2[vertex_size] = {
+		m_zpos.x, m_max.y, m_zpos.z,
+		m_zpos.x, m_max.y, m_max.z,
+		m_zpos.x, m_zpos.y, m_max.z,
+		m_max.x, m_zpos.y, m_max.z,
+	};
 
-	glGenVertexArrays(1, &axis.vao);
-	glBindVertexArray(axis.vao);
+	glGenVertexArrays(1, &axis.vao1);
+	glBindVertexArray(axis.vao1);
 
 	GLuint vbo;
 	glGenBuffers(1, &vbo);
@@ -302,18 +314,34 @@ void Model::generateAxis()
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
+
+	glGenVertexArrays(1, &axis.vao2);
+	glBindVertexArray(axis.vao2);
+
+	GLuint vbo2;
+	glGenBuffers(1, &vbo2);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo2);
+	glBufferData(GL_ARRAY_BUFFER, vertex_size * sizeof(GLfloat), vertices2, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
 }
 
 void Model::drawAxis()
 {
-	glBindVertexArray(axis.vao);
-
+	glBindVertexArray(axis.vao1);
 	glUseProgram(m_skeleton_sp);
 	glUniformMatrix4fv(m_mvp_uniform_skeleton, 1, GL_FALSE, &m_mvp[0][0]);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 	glLineWidth(2);
+	glDrawArrays(GL_LINE_STRIP, 0, axis.vertex_count);
 
+
+	glBindVertexArray(axis.vao2);
+	glUseProgram(m_skeleton_sp);
+	glUniformMatrix4fv(m_mvp_uniform_skeleton, 1, GL_FALSE, &m_mvp[0][0]);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glLineWidth(1);
 	glDrawArrays(GL_LINE_STRIP, 0, axis.vertex_count);
 }
 
@@ -321,7 +349,8 @@ void Model::freeBuffers()
 {
 	glDeleteVertexArrays(1, &m_vao);
 	glDeleteVertexArrays(1, &grid.vao);
-	glDeleteVertexArrays(1, &axis.vao);
+	glDeleteVertexArrays(1, &axis.vao1);
+	glDeleteVertexArrays(1, &axis.vao2);
 
 	delete m_vertices;
 }

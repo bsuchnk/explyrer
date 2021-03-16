@@ -14,5 +14,6 @@ struct Axis
 {
 	GLuint vertex_count;
 
-	GLuint vao;
+	GLuint vao1;
+	GLuint vao2;
 };
