@@ -1,10 +1,10 @@
 #pragma once
 
 #define GLEW_STATIC
-#include "dep/GLEW/glew.h"
+#include "glew.h"
 #include <string>
 #include <vector>
-#include "dep/glm/glm.hpp"
+#include "glm.hpp"
 #include "grid.h"
 
 class Model
@@ -39,6 +39,8 @@ public:
 	GLuint m_mvp_uniform_skeleton;
 
 	GLuint m_vao;
+	GLuint m_vbo;
+	GLuint m_ebo;
 
 
 	float xRotation = 0;

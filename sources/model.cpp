@@ -1,7 +1,7 @@
 #include "model.h"
 #include <fstream>
 #include <iostream>
-#include "dep/glm/gtc/matrix_transform.hpp"
+#include "gtc/matrix_transform.hpp"
 #include <algorithm>
 #include <wx/datetime.h>
 
@@ -23,7 +23,7 @@ void Model::drawMesh()
 	glUseProgram(m_skeleton_sp);
 	glUniformMatrix4fv(m_mvp_uniform_skeleton, 1, GL_FALSE, &m_mvp[0][0]);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glLineWidth(1 + m_size_max / 2500);
+	glLineWidth(1);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
 }
 
@@ -64,8 +64,10 @@ void Model::calculateMVP()
 
 Model::~Model()
 {
-	glDeleteProgram(m_filling_sp);
-	glDeleteProgram(m_skeleton_sp);
+	//glDeleteProgram(m_filling_sp);
+	//glDeleteProgram(m_skeleton_sp);
+
+	freeBuffers();
 }
 
 int Model::loadPLY(std::string src)
@@ -113,7 +115,6 @@ int Model::loadPLY(std::string src)
 	for (unsigned int i = 3; i < m_vertices_count; i += 3) {
 		f >> m_vertices[i] >> m_vertices[i + 1] >> m_vertices[i + 2];
 
-		bool x = m_zpos.x > 1.0;
 		m_zpos.x = std::min(m_zpos.x, m_vertices[i]);
 		m_zpos.y = std::min(m_zpos.y, m_vertices[i + 1]);
 		m_zpos.z = std::min(m_zpos.z, m_vertices[i + 2]);
@@ -193,17 +194,15 @@ void Model::makeBuffers()
 	glGenVertexArrays(1, &m_vao);
 	glBindVertexArray(m_vao);
 
-	GLuint vbo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glGenBuffers(1, &m_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 	glBufferData(GL_ARRAY_BUFFER, m_vertices_count * sizeof(GLfloat), m_vertices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
 
-	GLuint ebo;
-	glGenBuffers(1, &ebo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glGenBuffers(1, &m_ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
 }
 
@@ -233,7 +232,7 @@ void Model::generateGrid()
 	int zcnt = (int)(m_size.z / dl);
 	grid.vertex_count = cnt * 6 * (xcnt + ycnt + zcnt);
 
-	GLfloat* vertices = (GLfloat*)malloc(grid.vertex_count * sizeof(GLfloat));
+	GLfloat* vertices = new GLfloat[grid.vertex_count];
 	for (int i = 0; i < cnt; i++) {
 		for (int j = 0; j < xcnt; j++) {
 			vertices[index + 0] = m_zpos.x + j * dl;
@@ -284,6 +283,8 @@ void Model::generateGrid()
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
+
+	delete vertices;
 }
 
 void Model::drawGrid()
@@ -365,5 +366,8 @@ void Model::freeBuffers()
 	glDeleteVertexArrays(1, &axis.vao1);
 	glDeleteVertexArrays(1, &axis.vao2);
 
-	delete m_vertices;
+	glDeleteBuffers(1, &m_vbo);
+	glDeleteBuffers(1, &m_ebo);
+
+	delete[] m_vertices;
 }

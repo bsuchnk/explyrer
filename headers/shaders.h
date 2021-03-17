@@ -1,7 +1,7 @@
 #pragma once
 
 #define GLEW_STATIC
-#include "dep/GLEW/glew.h"
+#include "glew.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory>

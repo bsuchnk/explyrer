@@ -1,7 +1,7 @@
 #pragma once
 
 #define GLEW_STATIC
-#include "dep/GLEW/glew.h"
+#include "glew.h"
 #include "wx/wx.h"
 #include "wx/glcanvas.h"
 
@@ -16,7 +16,7 @@ private:
 
 public:
 	wxGLContext* m_context;
-	Model model;
+	Model* model;
 	glm::vec3 bcgColor;
 
 	bool isShowingGrid;

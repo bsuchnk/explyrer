@@ -50,7 +50,7 @@ CanvasFrame::CanvasFrame() : wxFrame(nullptr, wxID_ANY, "exPLYrer", wxDefaultPos
 	shaderBmps.Add(NULL);
 	shaderBmps.Add(NULL);
 	shaderComboBox = new wxBitmapComboBox(panel, ID_CHOOSE_SHADER, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY);
-	for (int i = 0; i < shaderChoices.GetCount(); i++)
+	for (unsigned int i = 0; i < shaderChoices.GetCount(); i++)
 		shaderComboBox->Append(shaderChoices[i]);
 	shaderComboBox->SetSelection(0);
 
@@ -100,15 +100,15 @@ void CanvasFrame::onFileMenuClick(wxCommandEvent& evt)
 	
 	//context.x = 69;
 
-	wxFileDialog* file_dialog = new wxFileDialog(
+	wxFileDialog file_dialog(
 		this, "Choose a file", "", "",
 		"ply files (*.ply)|*.ply",
 		wxFD_OPEN
 	);
-	if (file_dialog->ShowModal() == wxID_OK) {
+	if (file_dialog.ShowModal() == wxID_OK) {
 		myglcanvas->destroyModel();
-		myglcanvas->model = Model();
-		myglcanvas->loadModel(file_dialog->GetPath().c_str().AsChar());
+		myglcanvas->model = new Model();
+		myglcanvas->loadModel(file_dialog.GetPath().c_str().AsChar());
 		RefreshControls();
 		Refresh(false);// <- rysuje od nowa
 	}
@@ -135,9 +135,9 @@ void CanvasFrame::onRotateSlider(wxCommandEvent & evt)
 	int id = evt.GetId() - ID_ROTATE_SLIDER;
 	float* rotation = NULL;
 	switch (id) {
-		case 0: rotation = &myglcanvas->model.xRotation; break;
-		case 1: rotation = &myglcanvas->model.yRotation; break;
-		case 2: rotation = &myglcanvas->model.zRotation; break;
+		case 0: rotation = &myglcanvas->model->xRotation; break;
+		case 1: rotation = &myglcanvas->model->yRotation; break;
+		case 2: rotation = &myglcanvas->model->zRotation; break;
 	}
 	if (!rotation) {
 		wxMessageBox("Wrong Slider ID");
@@ -146,10 +146,10 @@ void CanvasFrame::onRotateSlider(wxCommandEvent & evt)
 
 	*rotation = (obj->GetValue() + 180) / 180.f * M_PI;
 	if (*rotation >= M_PI*2.f) {
-		*rotation -= M_PI*2.f;
+		*rotation -= (float)(M_PI*2);
 	}
 
-	myglcanvas->model.refresh();
+	myglcanvas->model->refresh();
 	myglcanvas->Refresh();
 }
 

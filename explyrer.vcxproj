@@ -19,22 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="App.cpp" />
-    <ClCompile Include="CanvasFrame.cpp" />
-    <ClCompile Include="global.cpp" />
-    <ClCompile Include="model.cpp" />
-    <ClCompile Include="MyGLCanvas.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="App.h" />
-    <ClInclude Include="CanvasFrame.h" />
-    <ClInclude Include="global.h" />
-    <ClInclude Include="grid.h" />
-    <ClInclude Include="model.h" />
-    <ClInclude Include="MyGLCanvas.h" />
-    <ClInclude Include="shaders.h" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="shaders\fs_black.glsl" />
     <None Include="shaders\fs_colored.glsl" />
     <None Include="shaders\vs_black.glsl" />
@@ -42,6 +26,22 @@
     <None Include="shaders\vs_rainbow.glsl" />
     <None Include="shaders\vs_raw.glsl" />
     <None Include="shaders\vs_white.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="sources\App.cpp" />
+    <ClCompile Include="sources\CanvasFrame.cpp" />
+    <ClCompile Include="sources\global.cpp" />
+    <ClCompile Include="sources\model.cpp" />
+    <ClCompile Include="sources\MyGLCanvas.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="headers\App.h" />
+    <ClInclude Include="headers\CanvasFrame.h" />
+    <ClInclude Include="headers\global.h" />
+    <ClInclude Include="headers\grid.h" />
+    <ClInclude Include="headers\model.h" />
+    <ClInclude Include="headers\MyGLCanvas.h" />
+    <ClInclude Include="headers\shaders.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -113,7 +113,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(WXWIN)\include; $(WXWIN)\include\msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WXWIN)\include; $(WXWIN)\include\msvc; headers; dep/GLEW; dep/glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -130,7 +130,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(WXWIN)\include; $(WXWIN)\include\msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WXWIN)\include; $(WXWIN)\include\msvc; headers; dep/GLEW; dep/glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

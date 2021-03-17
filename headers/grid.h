@@ -1,7 +1,7 @@
 #pragma once
 
 #define GLEW_STATIC
-#include "dep/GLEW/glew.h"
+#include "glew.h"
 
 struct Grid
 {

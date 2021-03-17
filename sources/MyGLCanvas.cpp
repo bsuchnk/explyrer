@@ -31,24 +31,26 @@ MyGLCanvas::MyGLCanvas(wxWindow* parent, int* attribList)
 
 	initiateShaders();
 
+	model = new Model();
 	loadModel("ply/ball.ply");
 }
 
 MyGLCanvas::~MyGLCanvas()
 {
 	delete m_context;
+	delete model;
 }
 
 void MyGLCanvas::setFillShader(int id)
 {
 	fillShader = id;
-	model.setShaderPrograms(shadersF[fillShader], shadersM[meshShader]);
+	model->setShaderPrograms(shadersF[fillShader], shadersM[meshShader]);
 }
 
 void MyGLCanvas::setMeshShader(int id)
 {
 	meshShader = id;
-	model.setShaderPrograms(fillShader, meshShader);
+	model->setShaderPrograms(fillShader, meshShader);
 }
 
 void MyGLCanvas::prepare3dViewport()
@@ -97,12 +99,12 @@ void MyGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if (isShowingGrid) {
-		model.drawGrid();
-		model.drawAxis();
+		model->drawGrid();
+		model->drawAxis();
 	}
-	model.draw();
+	model->draw();
 	if (isShowingMesh) {
-		model.drawMesh();
+		model->drawMesh();
 	}
 
 	glFlush();
@@ -126,16 +128,16 @@ void MyGLCanvas::OnKeyDown(wxKeyEvent& event)
 
 void MyGLCanvas::loadModel(wxString path)
 {
-	model.loadPLY(std::string(path.mb_str()));
-	model.makeBuffers();
-	model.calculateMVP();
-	model.generateGrid();
-	model.generateAxis();
+	model->loadPLY(std::string(path.mb_str()));
+	model->makeBuffers();
+	model->calculateMVP();
+	model->generateGrid();
+	model->generateAxis();
 
-	model.setShaderPrograms(shadersF[fillShader], shadersM[meshShader]);
+	model->setShaderPrograms(shadersF[fillShader], shadersM[meshShader]);
 }
 
 void MyGLCanvas::destroyModel()
 {
-	model.freeBuffers();
+	delete model;
 }
