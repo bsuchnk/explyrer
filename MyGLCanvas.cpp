@@ -27,6 +27,7 @@ MyGLCanvas::MyGLCanvas(wxWindow* parent, int* attribList)
 	//
 	isShowingGrid = true;
 	isShowingMesh = true;
+	bcgColor = { 1.0, 1.0, 1.0 };
 
 	initiateShaders();
 
@@ -36,7 +37,6 @@ MyGLCanvas::MyGLCanvas(wxWindow* parent, int* attribList)
 MyGLCanvas::~MyGLCanvas()
 {
 	delete m_context;
-	//delete shaders
 }
 
 void MyGLCanvas::setFillShader(int id)
@@ -66,10 +66,15 @@ void MyGLCanvas::prepare3dViewport()
 		glViewport(0, 0, w, h);
 	}
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // Black Background
+	glClearColor(bcgColor.x, bcgColor.y, bcgColor.z, 1.0f); // Black Background
 	glClearDepth(1.0f);	// Depth Buffer Setup
 	glEnable(GL_DEPTH_TEST); // Enables Depth Testing
 	glDepthFunc(GL_LEQUAL); // The Type Of Depth Testing To Do
+
+	//glEnable(GL_LINE_SMOOTH);
+	//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	//glLineWidth(0.5);
+	//glEnable(GL_MULTISAMPLE);
 }
 
 void MyGLCanvas::initiateShaders()

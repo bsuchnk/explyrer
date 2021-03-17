@@ -49,6 +49,7 @@ public:
 	void makeBuffers();
 	void draw();
 	void drawMesh();
+	void refresh();
 	void setShaderPrograms(GLuint filling, GLuint skeleton);
 	void calculateMVP();
 	void generateGrid();

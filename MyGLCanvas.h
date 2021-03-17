@@ -17,16 +17,13 @@ private:
 public:
 	wxGLContext* m_context;
 	Model model;
+	glm::vec3 bcgColor;
 
 	bool isShowingGrid;
 	bool isShowingMesh;
 
 	int fillShader = 0;
 	int meshShader = 0;
-/*
-	float xRotation;
-	float yRotation;
-	float zRotation;*/
 
 public:
     MyGLCanvas(wxWindow* parent, int* attribList = NULL);

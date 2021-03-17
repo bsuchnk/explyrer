@@ -5,6 +5,7 @@
 #include <fstream>
 #include "MyGLCanvas.h"
 #include <wx/bmpcbox.h>
+#include <wx/clrpicker.h>
 
 class CanvasFrame : public wxFrame
 {
@@ -22,6 +23,7 @@ public:
 	wxSlider* yRotateSlider;
 	wxSlider* zRotateSlider;
 	wxBitmapComboBox* shaderComboBox;
+	wxColourPickerCtrl* bcgColorPicker;
 
 	void RefreshControls();
 
@@ -30,6 +32,7 @@ public:
 	void onShowMesh(wxCommandEvent& evt);
 	void onRotateSlider(wxCommandEvent& evt);
 	void onChooseShader(wxCommandEvent& evt);
+	void onChooseBcgColor(wxColourPickerEvent& evt);
 
 	wxDECLARE_EVENT_TABLE();
 };

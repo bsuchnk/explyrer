@@ -8,9 +8,6 @@
 
 void Model::draw()
 {
-	//temporary:
-	calculateMVP();
-
 	glBindVertexArray(m_vao);
 
 	glUseProgram(m_filling_sp);
@@ -30,6 +27,11 @@ void Model::drawMesh()
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
 }
 
+void Model::refresh()
+{
+	calculateMVP();
+}
+
 void Model::calculateMVP()
 {
 	const float k = 0.8;
@@ -39,7 +41,7 @@ void Model::calculateMVP()
 		-m_size_max * k,
 		m_size_max * k,
 		0.00001f,
-		200000.0f
+		300000.0f
 	);
 
 
@@ -132,15 +134,26 @@ int Model::loadPLY(std::string src)
 		m_max.z - m_zpos.z
 	};
 
+	m_size_max = std::max(m_size.x, std::max(m_size.y, m_size.z));
+	float norm = 1.f / m_size_max;
+
 	for (unsigned int i = 0; i < m_vertices_count; i += 3) {
 		m_vertices[i + 0] -= m_middle.x;
 		m_vertices[i + 1] -= m_middle.y;
 		m_vertices[i + 2] -= m_middle.z;
+
+		m_vertices[i + 0] *= norm;
+		m_vertices[i + 1] *= norm;
+		m_vertices[i + 2] *= norm;
 	}
 	m_zpos -= m_middle;
 	m_max -= m_middle;
+	m_zpos *= norm;
+	m_middle *= norm;
+	m_max *= norm;
+	m_size *= norm;
+	m_size_max *= norm;
 
-	m_size_max = std::max(m_size.x, std::max(m_size.y, m_size.z));
 
 	int count = 0;
 	indices.clear();

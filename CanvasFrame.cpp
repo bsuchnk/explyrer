@@ -9,11 +9,13 @@
 #define ID_ROTATE_SLIDER 10002
 #define ID_SHOW_MESH 10005
 #define ID_CHOOSE_SHADER 10006
+#define ID_BCG_COLOR_PICKER 10007
 
 wxBEGIN_EVENT_TABLE(CanvasFrame, wxFrame)
 EVT_CHECKBOX(ID_SHOW_GRID, onShowGrid)
 EVT_CHECKBOX(ID_SHOW_MESH, onShowMesh)
 EVT_COMBOBOX(ID_CHOOSE_SHADER, onChooseShader)
+EVT_COLOURPICKER_CHANGED(ID_BCG_COLOR_PICKER, onChooseBcgColor)
 wxEND_EVENT_TABLE()
 
 CanvasFrame::CanvasFrame() : wxFrame(nullptr, wxID_ANY, "exPLYrer", wxDefaultPosition, wxSize(720, 720))
@@ -52,6 +54,8 @@ CanvasFrame::CanvasFrame() : wxFrame(nullptr, wxID_ANY, "exPLYrer", wxDefaultPos
 		shaderComboBox->Append(shaderChoices[i]);
 	shaderComboBox->SetSelection(0);
 
+	bcgColorPicker = new wxColourPickerCtrl(panel, ID_BCG_COLOR_PICKER, *wxStockGDI::GetColour(wxStockGDI::COLOUR_WHITE));
+
 	xRotateSlider = new wxSlider(panel, ID_ROTATE_SLIDER, 180, 0, 359);
 	yRotateSlider = new wxSlider(panel, ID_ROTATE_SLIDER+1, 180, 0, 359);
 	zRotateSlider = new wxSlider(panel, ID_ROTATE_SLIDER+2, 180, 0, 359);
@@ -62,16 +66,19 @@ CanvasFrame::CanvasFrame() : wxFrame(nullptr, wxID_ANY, "exPLYrer", wxDefaultPos
 	int args[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 24, 0 };
 	myglcanvas = new MyGLCanvas(panel, args);
 
-	sizer->Add(btnhoriz, 0, wxEXPAND);
-	btnhoriz->Add(showGrid, 0, wxCENTER);
+	btnhoriz->Add(showGrid, 0, wxCENTER | wxLEFT, 8);
 	btnhoriz->Add(showMesh, 0, wxCENTER);
 	btnhoriz->AddStretchSpacer();
-	btnhoriz->Add(shaderComboBox, 0, wxCENTER);
+	btnhoriz->Add(bcgColorPicker, 0, wxCENTER | wxRIGHT, 4);
+	btnhoriz->Add(shaderComboBox, 0, wxCENTER | wxRIGHT, 8);
+
+	glhoriz->Add(myglcanvas, 1, wxEXPAND);
+
+	sizer->Add(btnhoriz, 0, wxEXPAND);
 	sizer->Add(xRotateSlider, 0, wxEXPAND);
 	sizer->Add(yRotateSlider, 0, wxEXPAND);
 	sizer->Add(zRotateSlider, 0, wxEXPAND);
 	sizer->Add(glhoriz, 1, wxEXPAND);
-	glhoriz->Add(myglcanvas, 1, wxEXPAND);
 
 	panel->SetSizer(sizer);
 	Centre();
@@ -142,6 +149,7 @@ void CanvasFrame::onRotateSlider(wxCommandEvent & evt)
 		*rotation -= M_PI*2.f;
 	}
 
+	myglcanvas->model.refresh();
 	myglcanvas->Refresh();
 }
 
@@ -153,4 +161,13 @@ void CanvasFrame::onChooseShader(wxCommandEvent & evt)
 		myglcanvas->setFillShader(sel);
 		myglcanvas->Refresh();
 	}
+}
+
+void CanvasFrame::onChooseBcgColor(wxColourPickerEvent & evt)
+{
+	wxColour col = evt.GetColour();
+	myglcanvas->bcgColor.r = col.Red()/255.f;
+	myglcanvas->bcgColor.g = col.Green()/255.f;
+	myglcanvas->bcgColor.b = col.Blue()/255.f;
+	myglcanvas->Refresh();
 }
